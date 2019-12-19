@@ -76,9 +76,9 @@ for newline in newlogs:
         #print('fullcut end time: ' + newline[0])
         fullcutReco.append('fullcut end at ' + newline[0])
         #print('自動加工所花費的時間為: ' + str(fullcut_time) + '即為 '+ str(fullcut_time.seconds) + '秒')
-        fullcutReco.append('total full cut time: ' + str(fullcut_time) + ', '+ str(fullcut_time.seconds) + 'Seconds')
-        print('MTBA: ' + str(all_err_cnt/(fullcut_time.seconds)))
-        fullcutReco.append('MTBA: ' + str(all_err_cnt/(fullcut_time.seconds)))
+        fullcutReco.append('total full cut time: ' + str(fullcut_time) + ', '+ str(fullcut_time.seconds) + ' Seconds')
+        #print('MTBA: ' + str(all_err_cnt/(fullcut_time.seconds)))
+        fullcutReco.append('MTBA: ' + str((fullcut_time.seconds)*all_err_cnt/86400) + ' (hr)')
 
         # if input_err_number == newline[2]:
         #     print('MTBA: ' + str(err_cnt/(fullcut_time.seconds)))
@@ -88,5 +88,5 @@ for newline in newlogs:
 with open('outputLOG.csv', 'w', encoding='latin1') as fout:
     for line in fullcutReco:
         fout.write(line + '\n')
-print('The file is output. Please check "checkLOG.csv" to get MTBA result.')
+print('\nThe file is output. Please check "checkLOG.csv" file to get MTBA result.')
 time.sleep(5)
