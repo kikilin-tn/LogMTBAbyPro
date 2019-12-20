@@ -22,15 +22,24 @@ filename = input('please input the file name(ex.LG07_0520.txt): ' )
 #pro_id = input('please input the device name(ex.LG06-SN100-D-ASE-325-90-G-01):
 #with open(filename,'r',encoding='latin1') as f:
 with open(filename,'r', encoding='latin1') as f:
+    # for line in f:
+    #     if line.find('PRO') != -1 or line.find('ERRSET') != -1 or line.find('FAS')!= -1 or line.find('FAE')!= -1:
+    #     #if line.find('PRO') != -1 or line.find('ERRSET') != -1:
+    #         event = re.split(',|\t|\n', line)
+    #         logs.append(event[0:6])
+    # for line in logs:
+    #     print(line)
+#----------------------------
     for line in f:
-        if line.find('PRO') != -1 or line.find('ERRSET') != -1 or line.find('FAS')!= -1 or line.find('FAE')!= -1:
-        #if line.find('PRO') != -1 or line.find('ERRSET') != -1:
-            event = re.split(',|\t|\n', line)
-            logs.append(event[0:6])
-#    for line in logs:
-#        print(line)
-newlogs = logs[::-1]
+        event=re.split(',|\t|\n',line)
 
+        #if len(event) <3:
+        #    continue
+        #event[1] = event[1]
+        if event[1] == 'PRO' or event[1] == 'ERRSET'or event[1] == 'FAS' or event[1] == 'FAE':
+            logs.append(event[0:6])
+#---------------------------
+newlogs = logs[::-1]
 #with open('checkLOG.csv', 'w',encoding = 'utf-8') as fcheck:
 with open('checkLOG.csv', 'w', encoding='latin1') as fcheck:
     for line in newlogs:
@@ -48,7 +57,9 @@ for newline in newlogs:
         pro_cnt = 0
         all_err_cnt = 0
         err_cnt = 0
-        fas_time = datetime.strptime(newline[0],'%Y/%m/%d %H:%M:%S')
+        fas_date = str(newline[0])
+        fas_time = datetime.strptime(fas_date,'%Y/%m/%d %H:%M:%S')
+        #print('fas:' + str(fas_time))
 
      # elif newline[1] == 'ERRSET' and newline[2] == '40': #K0040  切痕検査:太寛
      #     err_cnt = err_cnt + 1
@@ -71,8 +82,14 @@ for newline in newlogs:
     #     print(newline[3] + ' occurred at ' + str(errtime) + ' '+ str(err_cnt) + ' times')
     #     fullcutReco.append(newline[3] + ' occurred at ' + str(errtime) + ' '+ str(err_cnt) + ' times')
     elif newline[1] == 'FAE':
-        fae_time = datetime.strptime(newline[0],'%Y/%m/%d %H:%M:%S')
-        fullcut_time = fae_time - fas_time
+        fae_date = str(newline[0])
+        fae_time = datetime.strptime(fae_date,'%Y/%m/%d %H:%M:%S')
+        #print('fae:' + str(fae_time))
+        if fas_time == None:
+            continue
+        else:
+            fullcut_time = fae_time - fas_time
+            #print(fullcut_time)
         #print('fullcut end time: ' + newline[0])
         fullcutReco.append('fullcut end at ' + newline[0])
         #print('自動加工所花費的時間為: ' + str(fullcut_time) + '即為 '+ str(fullcut_time.seconds) + '秒')
@@ -89,4 +106,4 @@ with open('outputLOG.csv', 'w', encoding='latin1') as fout:
     for line in fullcutReco:
         fout.write(line + '\n')
 print('\nThe file is output. Please check "checkLOG.csv" file to get MTBA result.')
-time.sleep(5)
+time.sleep(3)
